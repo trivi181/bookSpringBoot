@@ -10,6 +10,8 @@ import phantrivi_2011063105.lap3.entity.Category;
 import phantrivi_2011063105.lap3.services.CategoryService;
 
 import java.util.List;
+
+
 @Controller
 @RequestMapping("/categories")
 public class CategoryController {

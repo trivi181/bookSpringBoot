@@ -1,6 +1,8 @@
 package phantrivi_2011063105.lap3.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import phantrivi_2011063105.lap3.Validator.annotation.ValidUserId;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import phantrivi_2011063105.lap3.Validator.annotation.ValidCategoryId;
@@ -25,4 +27,9 @@ public class Book {
     @JoinColumn(name = "category_id")
     @ValidCategoryId
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    @ValidUserId
+    private User user;
 }
