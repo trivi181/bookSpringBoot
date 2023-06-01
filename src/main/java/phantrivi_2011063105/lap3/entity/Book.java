@@ -21,7 +21,7 @@ public class Book {
     @Column(name = "author")
     private String author;
     @Column(name = "price")
-    @NotNull(message = "Price is required")
+    @NotNull(message = "Prices is required")
     private Double price;
     @ManyToOne
     @JoinColumn(name = "category_id")
