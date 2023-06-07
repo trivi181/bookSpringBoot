@@ -16,6 +16,11 @@ public class BookService {
     public List<Book> getAllBooks(){
         return bookRepository.findAll();
     }
+    public List<Book> getAllBooks(Integer pageNo,
+                                   Integer pageSize,
+                                   String sortBy) {
+        return bookRepository.findAllBooks(pageNo, pageSize, sortBy);
+    }
     public Book getBookById(Long id){
         Optional<Book> optional = bookRepository.findById(id);
         return optional.orElse(null);

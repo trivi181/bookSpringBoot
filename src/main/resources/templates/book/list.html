@@ -1,15 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="en">
 <head>
   <meta charset="UTF-8">
   <title>My Book List</title>
-  <th:block th:replace="Layout :: link-css"> </th:block>
+  <th:block th:replace="~{layout :: link-css}"> </th:block>
 </head>
 <body>
-<th:block th:replace="layout :: header"></th:block>
+<th:block th:replace="~{layout :: header}"></th:block>
 <div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <nav class="navbar navbar-light">
+        <div class="container-fluid">
+          <h2>My Book List</h2>
+          <form class="d-flex" th:action="@{/books/search}"
+                method="get">
+            <input class="form-control me-2" type="search"
+                   placeholder="Search" aria-label="Search" name="keyword">
+            <button class="btn btn-outline-success"
+                    type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
+    </div>
+  </div>
   <h1 th:text="${title}"></h1>
   <table class="table">
     <tr>
@@ -25,18 +41,41 @@
       <td th:text="${book.title}"> </td>
       <td th:text="${book.author}"> </td>
       <td th:text="${book.price}"> </td>
-      <td th:text="${book.category.name}"></td>
+      <td th:text="${book.Category.name}"></td>
       <td sec:authorize="hasAnyAuthority('ADMIN')">
-
         <a th:href="@{/books/edit/{id}(id=${book.id})}">Edit</a> |
         <a th:href="@{/books/delete/{id}(id=${book.id})}"
-           onclick="return confirm('Are you sure?')">Delete</a>
+           onclick="deleteBook(this); return false;" class="text-danger">Delete</a>
+        <form th:action="@{/books/add-to-cart}" method="post" class="d-inline">
+          <input type="hidden" name="id" th:value="${book.getId()}">
+          <input type="hidden" name="name" th:value="${book.getTitle()}">
+          <input type="hidden" name="price"
+                 th:value="${book.getPrice()}">
+          <button type="submit" class="btn btn-success"
+                  onclick="return confirm('Are you sure you want to add this book to cart?')">Add to cart</button>
+        </form>
       </td>
     </tr>
   </table>
 </div>
-<script th:src="@{/js/jquery-3.7.0.min.js}"></script>
-<script th:src="@{/js/delete.js}"></script>
-<th:block th:replace="layout :: footer"></th:block>
+<script th:src="@{/js/jquery-3.5.1.min.js}"></script>
+<script th:inline="javascript">
+  function deleteBook(link){
+    if(confirm('Are you sure?')){
+      $.ajax({
+        url: $(link).attr('href'),
+        type: 'DELETE',
+        success: result => {
+          if(!result.success){
+            alert(result.message);
+          } else {
+            $(link).parent().parent().remove();
+          }
+        }
+      });
+    }
+  }
+</script>
+<th:block th:replace="~{layout::footer}"></th:block>
 </body>
 </html>

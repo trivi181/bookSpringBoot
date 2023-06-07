@@ -1,8 +1,11 @@
 package phantrivi_2011063105.lap3.controller;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import phantrivi_2011063105.lap3.daos.Item;
+import phantrivi_2011063105.lap3.services.CartService;
 import phantrivi_2011063105.lap3.services.CategoryService;
 import phantrivi_2011063105.lap3.services.BookService;
 import phantrivi_2011063105.lap3.entity.Book;
@@ -65,6 +68,21 @@ public class  BookController {
     public String deleteBook(@PathVariable("id")Long id){
         Book book = bookService.getBookById(id);
         bookService.deleteBook(id);
+        return "redirect:/books";
+    }
+
+    @Autowired
+    private CartService cartService;
+    @PostMapping("/add-to-cart")
+    public String addToCart(HttpSession session,
+                            @RequestParam long id,
+                            @RequestParam String name,
+                            @RequestParam double price,
+                            @RequestParam(defaultValue = "1") int quantity)
+    {
+        var cart = cartService.getCart(session);
+        cart.addItems(new Item(id, name, price, quantity));
+        cartService.updateCart(session, cart);
         return "redirect:/books";
     }
 }
